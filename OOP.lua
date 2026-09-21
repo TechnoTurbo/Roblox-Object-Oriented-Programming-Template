@@ -1,55 +1,81 @@
+--!strict
+--!optimize 2
+--!native
+
+--[[
+	This class does something. It's great for being used as an example.
+	@? ??/??/????
+]]
+
 ------------------------------------------------------------//VARIABLES\\-------------------------------------------------------------
 
 --//SERVICES
+--references to roblox service like RunService, UserInputService, etc go here
 
 --//DIRECTORY
+--references to roblox instances go here
 
---for inheritance
---local super = require(script.Parent)
 --//DATA
+--local variables useful to the static portion of the class or read-only data for objects to reference
 
-------------------------------------------------------------//FUNCTIONS\\-------------------------------------------------------------
-function SeachParents(key, parents)
-	for i=1, #parents do
-		local found = parents[i][key]
+-------------------------------------------------------------//TYPEDEF\\--------------------------------------------------------------
 
-		if found then
-			return found
-		end
-	end
-end
+export type Class = {
+	--properties
+	name : string;
+	id : string;
 
-function RegisterParent(parents)
-	return {
-		__index = function(self, key)
-			return SeachParents(key, parents)
-		end,
-	}
-end
--------------------------------------------------------------//CLASS\\-------------------------------------------------------------
+	--methods
+	new: (name : string?) -> (Class);
+	delete: () -> ();
+}
 
-Class = {}
+-------------------------------------------------------------//CLASS\\----------------------------------------------------------------
+
+local Class = {}
 Class.__index = Class
-
---static variables
-
 Class.objects = {}
 
---static
+------------------------------------------------------------//FUNCTIONS\\-------------------------------------------------------------
 
---nonstatic
+--Define regular functions like private internal helpers here.
 
---constructor
+---------------------------------------------------------------//API\\----------------------------------------------------------------
 
-function Class.new(data)
-	local self = setmetatable({}, Class)
+--[[
+	Destructor function that prepares the object for garbage collection. Takes no arguments and returns nothing.
+]]
+function Class:delete()
+	
+end
 
-	self.id = tostring(self)
+--[[
+	Initialization function for constructor.
 
-	Class.objects[tostring(self)] = self
+	@self | The object to run initialization on.
+]]
+local function init(self : Class)
+	
+end
 
+--[[
+	Constructs a new object of type Class.
+
+	@name   | The decided name for the new Class object.
+	@return | The newly created object.
+]]
+function Class.new(name : string?) : Class
+	local self = setmetatable({}, Class) :: Class
+
+	self.name = name or "Object"; --example for constructor function argument
+	
+	self.id = tostring(self) --example of setting value here
+	Class.objects[self.id] = self --this is optional, but essentially is a model to have Classes own their own objects.
+
+	init(self)
 	return self
 end
 
+------------------------------------------------------------//EXECUTION\\-------------------------------------------------------------
+--Any code that needs to run immediately the first time this module is required should go here.
 return Class
-
